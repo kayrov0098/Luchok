@@ -192,7 +192,7 @@ namespace Лючки
             string sModelName = swModel.GetPathName();
             string sPathName = swModel.GetPathName();
             sPathName = sPathName.Substring(0, sPathName.Length - 6);
-            sPathName = sPathName + "dwg";
+            sPathName = sPathName + "dxf";
 
             
             dataAlignment[0] = 0.0;
@@ -223,7 +223,7 @@ namespace Лючки
 
             swPart.ExportToDWG2(sPathName, sModelName, 3, true, varAlignment, false, false, 0, dataViews);
 
-            //12312323232
+            //123123232323455
              
         }
     }   
