@@ -223,6 +223,7 @@ namespace Лючки
 
             swPart.ExportToDWG2(sPathName, sModelName, 3, true, varAlignment, false, false, 0, dataViews);
 
+            //12312323232
              
         }
     }   
