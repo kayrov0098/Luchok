@@ -26,18 +26,21 @@ namespace Лючки
         }
         SldWorks swApp;
         ModelDocExtension swModelDocExt;
-        ModelDoc2 swModel;
+        IModelDoc2 swModel;
         DrawingDoc swDrawing;
         SelectionMgr swSelmgr;
         SolidWorks.Interop.sldworks.View swView;
+        ISketchManager swModel2;
+        IModelDocExtension swModel3;
+
+
 
         //  ModelDoc2 swModel;
 
-        private void button1_Click1(object sender, EventArgs e)
-        { }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void button1_Click_1(object sender, EventArgs e)
         {
+
             Process[] processes = Process.GetProcessesByName("SLDWORKS");
             foreach (Process process in processes)
             {
@@ -88,6 +91,30 @@ namespace Лючки
             var slotLen6 = ((double)lenghtSlot6.Value / d) / 2;
             var slotLen7 = ((double)lenghtSlot7.Value / d) / 2;
             var slotLen8 = ((double)lenghtSlot8.Value / d) / 2;
+            var heigthToCut1 = ((double)heightToCutout1.Value / d);
+            var heigthToCut2 = ((double)heigthToCutout2.Value / d);
+            var heigthToCut3 = ((double)heigthToCutout3.Value / d);
+            var heigthToCut4 = ((double)heigthToCutout4.Value / d);
+            var heigthToCut5 = ((double)heigthToCutout5.Value / d);
+            var heigthToCut6 = ((double)heigthToCutout6.Value / d);
+            var heigthToCut7 = ((double)heigthToCutout7.Value / d);
+            var heigthToCut8 = ((double)heigthToCutout8.Value / d);
+            var heigthCut1 = ((double)hegthCutout1.Value / d);
+            var heigthCut2 = ((double)hegthCutout2.Value / d);
+            var heigthCut3 = ((double)hegthCutout3.Value / d);
+            var heigthCut4 = ((double)hegthCutout4.Value / d);
+            var heigthCut5 = ((double)hegthCutout5.Value / d);
+            var heigthCut6 = ((double)hegthCutout6.Value / d);
+            var heigthCut7 = ((double)hegthCutout7.Value / d);
+            var heigthCut8 = ((double)hegthCutout8.Value / d);
+            var depthCut1 = ((double)depthCutout1.Value / d);
+            var depthCut2 = ((double)depthCutout2.Value / d);
+            var depthCut3 = ((double)depthCutout3.Value / d);
+            var depthCut4 = ((double)depthCutout4.Value / d);
+            var depthCut5 = ((double)depthCutout5.Value / d);
+            var depthCut6 = ((double)depthCutout6.Value / d);
+            var depthCut7 = ((double)depthCutout7.Value / d);
+            var depthCut8 = ((double)depthCutout8.Value / d);
 
             
 
@@ -148,10 +175,33 @@ namespace Лючки
                     swModel.SketchManager.CreateCornerRectangle(pen[0], pen[1], 0, pen[0] + x2, pen[1] + wid, 0);
                 }
             }
+           
+            // Построение выреза под трубу
+
+            void BildСutout(double[] pin, string cutout, double y, double yHeigth, double x)
+            {
+                switch (cutout)
+                {
+                    case "Слева":
+                        swModel.SketchManager.CreateCornerRectangle(pin[0], pin[1]+y , 0, pin[0] + x, pin[1]+y+yHeigth, 0);
+                        swModel.Extension.SelectByID2("Линия2", "SKETCHSEGMENT", 0, 0, 0, false, 0, null, 0);
+                        swModel.SketchTrim(1,0, pen[0], pen[1]+y+0.001);
+                        swModel.Extension.SelectByID2("Линия6", "SKETCHSEGMENT", 0, 0, 0, false, 0, null, 0);
+                        swModel.SketchTrim(1,0, pen[0], pen[1] + y + 0.001);
+                        break;
+                    case "Справа":
+                        swModel.SketchManager.CreateCornerRectangle(0, 0, 0, len1, wid, 0);
+                        break;
+                    case "Нет":
+                        break;
+                }
+                
+                }
 
             // Постороение первого лючка
 
             swModel.SketchManager.CreateCornerRectangle(0, 0, 0, len1, wid, 0);
+            BildСutout(pen, cutoutChek1.Text, heigthToCut1, heigthCut1, depthCut1);
             BuildHole(pen, holeBox1.Text, hole1, slotLen1);
 
             //Построение 2-8 лючка
@@ -183,7 +233,7 @@ namespace Лючки
             object varAlignment;
             string[] dataViews = new string[2];
             object varViews;
-            string nameF = "C:\\Users\\kayrov\\Desktop\\Лючки\\Лючек №" + nameFile.Text + ".SLDPRT";
+            string nameF = "C:\\Luk\\№" + nameFile.Text + ".SLDPRT";
 
             // Сохранение 3D
 
@@ -226,6 +276,8 @@ namespace Лючки
             //123123232323455
              
         }
+
+        
     }   
 
 }
