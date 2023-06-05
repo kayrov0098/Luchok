@@ -116,13 +116,17 @@ namespace Лючки
             var depthCut7 = ((double)depthCutout7.Value / d);
             var depthCut8 = ((double)depthCutout8.Value / d);
 
-            
 
 
 
+            var line = "Линия";
+            var namberLine = 2;
             double wid = (double)width.Value / d;
             var pen = new double[2];
             bool per = false;
+            var numberLuc = 1;
+            
+
 
             // Перенос карандаша
 
@@ -173,24 +177,48 @@ namespace Лючки
                         per = false;
                     TransprtPen(pen, x, per);
                     swModel.SketchManager.CreateCornerRectangle(pen[0], pen[1], 0, pen[0] + x2, pen[1] + wid, 0);
+                    namberLine = namberLine + 4;
+                    numberLuc++;
+
                 }
             }
-           
+            
+            // построение отверстии для интедефикации лючка
+
+            void OtvLuc(bool chek, double x, double y,int num)
+            {
+                if (chek==true)
+                for (int i = 0; i < num; i++)
+                {
+                    swModel.SketchManager.CreateCircleByRadius(x + 0.01+(i*0.01), y + wid - 0.005, 0, 0.0025);
+                }
+                                   
+            }
+
             // Построение выреза под трубу
 
-            void BildСutout(double[] pin, string cutout, double y, double yHeigth, double x)
+            void BildСutout(double[] pin, string cutout, double y, double yHeigth, double x, double length)
             {
                 switch (cutout)
                 {
                     case "Слева":
                         swModel.SketchManager.CreateCornerRectangle(pin[0], pin[1]+y , 0, pin[0] + x, pin[1]+y+yHeigth, 0);
-                        swModel.Extension.SelectByID2("Линия2", "SKETCHSEGMENT", 0, 0, 0, false, 0, null, 0);
-                        swModel.SketchTrim(1,0, pen[0], pen[1]+y+0.001);
-                        swModel.Extension.SelectByID2("Линия6", "SKETCHSEGMENT", 0, 0, 0, false, 0, null, 0);
-                        swModel.SketchTrim(1,0, pen[0], pen[1] + y + 0.001);
+                        swModel.Extension.SelectByID2(line+namberLine, "SKETCHSEGMENT", 0, 0, 0, false, 0, null, 0);
+                        swModel.SketchManager.SketchTrim(0, pen[0], pen[1] + y + 0.001, 0);
+                        namberLine=namberLine + 4;
+                        swModel.Extension.SelectByID2(line+namberLine, "SKETCHSEGMENT", 0, 0, 0, false, 0, null, 0);
+                        swModel.SketchManager.SketchTrim(0, pen[0], pen[1] + y + 0.001, 0);
+                        namberLine = namberLine + 1;
                         break;
                     case "Справа":
-                        swModel.SketchManager.CreateCornerRectangle(0, 0, 0, len1, wid, 0);
+                        swModel.SketchManager.CreateCornerRectangle(pen[0]+length, pen[1]+y, 0, pen[0]+length-x, pen[1] + y+yHeigth, 0);
+                        namberLine = namberLine + 2;
+                        swModel.Extension.SelectByID2(line + namberLine, "SKETCHSEGMENT", 0, 0, 0, false, 0, null, 0);
+                        swModel.SketchManager.SketchTrim(0, pen[0]+length, pen[1] + y + 0.001, 0);
+                        namberLine = namberLine + 2;
+                        swModel.Extension.SelectByID2(line + namberLine, "SKETCHSEGMENT", 0, 0, 0, false, 0, null, 0);
+                        swModel.SketchManager.SketchTrim(0, pen[0]+length, pen[1] + y + 0.001, 0);
+                        namberLine = namberLine + 1;
                         break;
                     case "Нет":
                         break;
@@ -201,25 +229,46 @@ namespace Лючки
             // Постороение первого лючка
 
             swModel.SketchManager.CreateCornerRectangle(0, 0, 0, len1, wid, 0);
-            BildСutout(pen, cutoutChek1.Text, heigthToCut1, heigthCut1, depthCut1);
+            swModel.SketchManager.CreateCircleByRadius(pen[0] + 0.01, pen[1]+wid-0.005, 0, 0.0025);
+            BildСutout(pen, cutoutChek1.Text, heigthToCut1, heigthCut1, depthCut1,len1);
             BuildHole(pen, holeBox1.Text, hole1, slotLen1);
 
             //Построение 2-8 лючка
-
+            
             BildLuc(l2.Checked, len1, len2);
+            BildСutout(pen, cutoutChek2.Text, heigthToCut2, heigthCut2, depthCut2,len2);
             BuildHole(pen, holeBox2.Text, hole2, slotLen2);
+            OtvLuc(l2.Checked, pen[0], pen[1], numberLuc);
+
             BildLuc(l3.Checked, len2, len3);
+            BildСutout(pen, cutoutChek3.Text, heigthToCut3, heigthCut3, depthCut3,len3);
             BuildHole(pen, holeBox3.Text, hole3, slotLen3);
+            OtvLuc(l3.Checked, pen[0], pen[1], numberLuc);
+
             BildLuc(l4.Checked, len3, len4);
+            BildСutout(pen, cutoutChek4.Text, heigthToCut4, heigthCut4, depthCut4,len4);
             BuildHole(pen, holeBox4.Text, hole4, slotLen4);
+            OtvLuc(l4.Checked, pen[0], pen[1], numberLuc);
+
             BildLuc(l5.Checked, len4, len5);
+            BildСutout(pen, cutoutChek5.Text, heigthToCut5, heigthCut5, depthCut5,len5);
             BuildHole(pen, holeBox5.Text, hole5, slotLen5);
+            OtvLuc(l5.Checked, pen[0], pen[1], numberLuc);
+
             BildLuc(l6.Checked, len5, len6);
+            BildСutout(pen, cutoutChek6.Text, heigthToCut6, heigthCut6, depthCut6,len6);
             BuildHole(pen, holeBox6.Text, hole6, slotLen6);
+            OtvLuc(l6.Checked, pen[0], pen[1], numberLuc);
+
             BildLuc(l7.Checked, len6, len7);
+            BildСutout(pen, cutoutChek7.Text, heigthToCut7, heigthCut7, depthCut7,len7);
             BuildHole(pen, holeBox7.Text, hole7, slotLen7);
+            OtvLuc(l7.Checked, pen[0], pen[1], numberLuc);
+
             BildLuc(l8.Checked, len7, len8);
+            BildСutout(pen, cutoutChek8.Text, heigthToCut8, heigthCut8, depthCut8,len8);
             BuildHole(pen, holeBox8.Text, hole8, slotLen8);
+            OtvLuc(l8.Checked, pen[0], pen[1], numberLuc);
 
             // Сохранение файла
 
